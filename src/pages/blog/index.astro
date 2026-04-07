@@ -44,9 +44,10 @@ const posts = [
   },
 ];
 
+const TOP_POSTS_LIMIT = 3;
 const featuredPost = posts.find((post) => post.featured);
-const topViewedPosts = [...posts].sort((a, b) => b.views - a.views).slice(0, 3);
-const recommendedPosts = posts.slice(1, 4);
+const topViewedPosts = [...posts].sort((a, b) => b.views - a.views).slice(0, TOP_POSTS_LIMIT);
+const recommendedPosts = posts.slice(1, 1 + TOP_POSTS_LIMIT);
 
 const formatViews = (value: number) => new Intl.NumberFormat('vi-VN').format(value);
 ---
