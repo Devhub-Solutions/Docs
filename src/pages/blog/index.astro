@@ -1,0 +1,117 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const categories = [
+  { name: 'Astro', count: 2 },
+  { name: 'Nội dung', count: 1 },
+  { name: 'SEO', count: 1 },
+  { name: 'Hiệu năng', count: 1 },
+];
+
+const posts = [
+  {
+    title: 'Tối ưu hiệu năng Docs với Astro Islands',
+    slug: 'astro-performance',
+    category: 'Astro',
+    excerpt: 'Giảm JS không cần thiết, cải thiện tốc độ tải và giữ trải nghiệm đọc mượt trên mọi thiết bị.',
+    views: 4250,
+    readTime: '7 phút đọc',
+    featured: true,
+  },
+  {
+    title: 'Chiến lược nội dung tài liệu cho team sản phẩm',
+    slug: 'content-strategy',
+    category: 'Nội dung',
+    excerpt: 'Cách xây dựng danh mục, vòng đời bài viết, và quy trình cập nhật để tài liệu luôn hữu ích.',
+    views: 2980,
+    readTime: '6 phút đọc',
+  },
+  {
+    title: 'SEO cho tài liệu kỹ thuật: từ title đến internal links',
+    slug: 'docs-seo',
+    category: 'SEO',
+    excerpt: 'Tối ưu cấu trúc trang docs/blog để người dùng tìm đúng nội dung và tăng organic traffic.',
+    views: 3510,
+    readTime: '8 phút đọc',
+  },
+  {
+    title: 'Checklist trước khi phát hành phiên bản docs mới',
+    slug: 'release-checklist',
+    category: 'Hiệu năng',
+    excerpt: 'Danh sách kiểm tra nhanh về chất lượng nội dung, liên kết, build và theo dõi hành vi người đọc.',
+    views: 2110,
+    readTime: '5 phút đọc',
+  },
+];
+
+const featuredPost = posts.find((post) => post.featured);
+const topViewedPosts = [...posts].sort((a, b) => b.views - a.views).slice(0, 3);
+const recommendedPosts = posts.slice(1, 4);
+
+const formatViews = (value: number) => new Intl.NumberFormat('vi-VN').format(value);
+---
+
+<Layout title="Blog" description="Blog DevHub Docs: bài viết chuyên sâu, danh mục nội dung, top bài xem nhiều và gợi ý đọc tiếp">
+  <section class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+    <div class="max-w-3xl">
+      <span class="badge-lime mb-4">Blog DevHub Docs</span>
+      <h1 class="text-3xl sm:text-4xl font-bold text-zinc-100">Bài viết, danh mục và gợi ý đọc tiếp</h1>
+      <p class="text-zinc-400 mt-4 text-lg">
+        Khám phá các bài viết theo chủ đề, theo dõi nội dung được xem nhiều nhất và nhận gợi ý phù hợp.
+      </p>
+    </div>
+  </section>
+
+  <section id="danh-muc" class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
+    <h2 class="text-2xl font-bold text-zinc-100 mb-4">Danh mục</h2>
+    <div class="flex flex-wrap gap-3">
+      {categories.map((category) => (
+        <span class="badge-zinc px-4 py-2 text-sm">
+          {category.name}
+          <span class="ml-2 text-zinc-400">({category.count})</span>
+        </span>
+      ))}
+    </div>
+  </section>
+
+  {featuredPost && (
+    <section class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      <h2 class="text-2xl font-bold text-zinc-100 mb-4">Bài viết nổi bật</h2>
+      <a href={`/Docs/blog/${featuredPost.slug}`} class="card block group">
+        <div class="flex flex-wrap gap-3 items-center mb-3">
+          <span class="badge-lime">{featuredPost.category}</span>
+          <span class="text-xs text-zinc-500">{featuredPost.readTime}</span>
+          <span class="text-xs text-zinc-500">{formatViews(featuredPost.views)} lượt xem</span>
+        </div>
+        <h3 class="text-xl font-semibold text-zinc-100 group-hover:text-lime-400 transition-colors">{featuredPost.title}</h3>
+        <p class="text-zinc-400 mt-3">{featuredPost.excerpt}</p>
+      </a>
+    </section>
+  )}
+
+  <section class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+    <h2 class="text-2xl font-bold text-zinc-100 mb-4">Top bài viết xem nhiều</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {topViewedPosts.map((post, index) => (
+        <a href={`/Docs/blog/${post.slug}`} class="card group">
+          <span class="text-xs text-lime-400 font-semibold">TOP {index + 1}</span>
+          <h3 class="text-lg font-semibold text-zinc-100 mt-2 group-hover:text-lime-400 transition-colors">{post.title}</h3>
+          <p class="text-sm text-zinc-500 mt-2">{formatViews(post.views)} lượt xem · {post.readTime}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
+    <h2 class="text-2xl font-bold text-zinc-100 mb-4">Gợi ý cho bạn</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {recommendedPosts.map((post) => (
+        <a href={`/Docs/blog/${post.slug}`} class="card group">
+          <span class="badge-zinc">{post.category}</span>
+          <h3 class="text-lg font-semibold text-zinc-100 mt-3 group-hover:text-lime-400 transition-colors">{post.title}</h3>
+          <p class="text-sm text-zinc-400 mt-2">{post.excerpt}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>

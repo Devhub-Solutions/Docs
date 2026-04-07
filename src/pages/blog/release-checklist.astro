@@ -1,0 +1,23 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Checklist trước khi phát hành docs mới" description="Danh sách kiểm tra trước khi phát hành tài liệu và bài viết">
+  <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+    <a href="/Docs/blog" class="text-sm text-lime-400 hover:text-lime-300 transition-colors">← Quay về Blog</a>
+    <h1 class="text-3xl sm:text-4xl font-bold text-zinc-100 mt-4">Checklist trước khi phát hành phiên bản docs mới</h1>
+    <p class="text-zinc-400 mt-4">
+      Trước mỗi lần phát hành, nên kiểm tra tính đúng đắn của nội dung, liên kết điều hướng và chất lượng build để tránh lỗi trải nghiệm người dùng.
+    </p>
+
+    <div class="card mt-8">
+      <h2 class="text-xl font-semibold text-zinc-100 mb-2">Checklist phát hành</h2>
+      <ul class="space-y-2 text-zinc-300 text-sm">
+        <li>• Kiểm tra liên kết hỏng và lỗi chính tả.</li>
+        <li>• Đảm bảo menu phản ánh đầy đủ danh mục.</li>
+        <li>• Build thành công trên CI.</li>
+        <li>• Có khối “gợi ý đọc tiếp” cho bài quan trọng.</li>
+      </ul>
+    </div>
+  </article>
+</Layout>
