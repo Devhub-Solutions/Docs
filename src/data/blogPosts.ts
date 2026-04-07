@@ -75,17 +75,8 @@ export const getCategoriesWithCount = () => {
 
 /**
  * Returns recommended posts while trying to exclude already surfaced posts first.
- * If the preferred pool is not enough, it falls back to non-featured posts to keep
- * the recommendation section populated without duplicating featured content.
  */
 export const getRecommendedPosts = (limit: number, excludedSlugs: string[] = []) => {
   const excluded = new Set(excludedSlugs);
-  const preferredPool = BLOG_POSTS.filter((post) => !excluded.has(post.slug));
-
-  if (preferredPool.length >= limit) {
-    return preferredPool.slice(0, limit);
-  }
-
-  const fallbackPool = BLOG_POSTS.filter((post) => !excluded.has(post.slug) && !post.featured);
-  return [...new Map([...preferredPool, ...fallbackPool].map((post) => [post.slug, post])).values()].slice(0, limit);
+  return BLOG_POSTS.filter((post) => !excluded.has(post.slug)).slice(0, limit);
 };
