@@ -1,55 +1,17 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-
-const categories = [
-  { name: 'Astro', count: 2 },
-  { name: 'Nội dung', count: 1 },
-  { name: 'SEO', count: 1 },
-  { name: 'Hiệu năng', count: 1 },
-];
-
-const posts = [
-  {
-    title: 'Tối ưu hiệu năng Docs với Astro Islands',
-    slug: 'astro-performance',
-    category: 'Astro',
-    excerpt: 'Giảm JS không cần thiết, cải thiện tốc độ tải và giữ trải nghiệm đọc mượt trên mọi thiết bị.',
-    views: 4250,
-    readTime: '7 phút đọc',
-    featured: true,
-  },
-  {
-    title: 'Chiến lược nội dung tài liệu cho team sản phẩm',
-    slug: 'content-strategy',
-    category: 'Nội dung',
-    excerpt: 'Cách xây dựng danh mục, vòng đời bài viết, và quy trình cập nhật để tài liệu luôn hữu ích.',
-    views: 2980,
-    readTime: '6 phút đọc',
-  },
-  {
-    title: 'SEO cho tài liệu kỹ thuật: từ title đến internal links',
-    slug: 'docs-seo',
-    category: 'SEO',
-    excerpt: 'Tối ưu cấu trúc trang docs/blog để người dùng tìm đúng nội dung và tăng organic traffic.',
-    views: 3510,
-    readTime: '8 phút đọc',
-  },
-  {
-    title: 'Checklist trước khi phát hành phiên bản docs mới',
-    slug: 'release-checklist',
-    category: 'Hiệu năng',
-    excerpt: 'Danh sách kiểm tra nhanh về chất lượng nội dung, liên kết, build và theo dõi hành vi người đọc.',
-    views: 2110,
-    readTime: '5 phút đọc',
-  },
-];
+import { BLOG_POSTS, formatViews } from '../../data/blogPosts';
 
 const TOP_POSTS_LIMIT = 3;
-const featuredPost = posts.find((post) => post.featured);
-const topViewedPosts = [...posts].sort((a, b) => b.views - a.views).slice(0, TOP_POSTS_LIMIT);
-const recommendedPosts = posts.slice(1, 1 + TOP_POSTS_LIMIT);
+const featuredPost = BLOG_POSTS.find((post) => post.featured);
+const topViewedPosts = [...BLOG_POSTS].sort((a, b) => b.views - a.views).slice(0, TOP_POSTS_LIMIT);
+const recommendedPosts = BLOG_POSTS.slice(1, 1 + TOP_POSTS_LIMIT);
 
-const formatViews = (value: number) => new Intl.NumberFormat('vi-VN').format(value);
+const categoryCountMap = BLOG_POSTS.reduce<Record<string, number>>((acc, post) => {
+  acc[post.category] = (acc[post.category] || 0) + 1;
+  return acc;
+}, {});
+const categories = Object.entries(categoryCountMap).map(([name, count]) => ({ name, count }));
 ---
 
 <Layout title="Blog" description="Blog DevHub Docs: bài viết chuyên sâu, danh mục nội dung, top bài xem nhiều và gợi ý đọc tiếp">

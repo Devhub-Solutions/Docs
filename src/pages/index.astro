@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { BLOG_POSTS, formatViews } from '../data/blogPosts';
 
 const features = [
   {
@@ -41,11 +42,7 @@ const quickLinks = [
   { href: '/Docs/docs/deployment', title: 'Triển khai', desc: 'Deploy lên GitHub Pages', emoji: '🌐' },
 ];
 
-const blogHighlights = [
-  { href: '/Docs/blog/astro-performance', title: 'Tối ưu hiệu năng Docs với Astro', category: 'Astro', views: '4.250 lượt xem' },
-  { href: '/Docs/blog/docs-seo', title: 'SEO cho tài liệu kỹ thuật', category: 'SEO', views: '3.510 lượt xem' },
-  { href: '/Docs/blog/content-strategy', title: 'Chiến lược nội dung cho team sản phẩm', category: 'Nội dung', views: '2.980 lượt xem' },
-];
+const blogHighlights = [...BLOG_POSTS].sort((a, b) => b.views - a.views).slice(0, 3);
 ---
 
 <Layout title="Trang chủ" description="DevHub Documentation - Tài liệu kỹ thuật toàn diện cho nhà phát triển">
@@ -140,10 +137,10 @@ const blogHighlights = [
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       {blogHighlights.map((post) => (
-        <a href={post.href} class="card group">
+        <a href={`/Docs/blog/${post.slug}`} class="card group">
           <span class="badge-lime">{post.category}</span>
           <h3 class="text-lg font-semibold text-zinc-100 mt-3 group-hover:text-lime-400 transition-colors">{post.title}</h3>
-          <p class="text-sm text-zinc-500 mt-2">{post.views}</p>
+          <p class="text-sm text-zinc-500 mt-2">{formatViews(post.views)} lượt xem</p>
         </a>
       ))}
     </div>
