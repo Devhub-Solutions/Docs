@@ -1,17 +1,21 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { BLOG_POSTS, formatViews } from '../../data/blogPosts';
+import {
+  BLOG_POSTS,
+  formatViews,
+  getCategoriesWithCount,
+  getRecommendedPosts,
+  getTopViewedPosts,
+} from '../../data/blogPosts';
 
 const TOP_POSTS_LIMIT = 3;
 const featuredPost = BLOG_POSTS.find((post) => post.featured);
-const topViewedPosts = [...BLOG_POSTS].sort((a, b) => b.views - a.views).slice(0, TOP_POSTS_LIMIT);
-const recommendedPosts = BLOG_POSTS.slice(1, 1 + TOP_POSTS_LIMIT);
-
-const categoryCountMap = BLOG_POSTS.reduce<Record<string, number>>((acc, post) => {
-  acc[post.category] = (acc[post.category] || 0) + 1;
-  return acc;
-}, {});
-const categories = Object.entries(categoryCountMap).map(([name, count]) => ({ name, count }));
+const topViewedPosts = getTopViewedPosts(TOP_POSTS_LIMIT);
+const categories = getCategoriesWithCount();
+const recommendedPosts = getRecommendedPosts(
+  TOP_POSTS_LIMIT,
+  [...topViewedPosts.map((post) => post.slug), ...(featuredPost ? [featuredPost.slug] : [])],
+);
 ---
 
 <Layout title="Blog" description="Blog DevHub Docs: bài viết chuyên sâu, danh mục nội dung, top bài xem nhiều và gợi ý đọc tiếp">

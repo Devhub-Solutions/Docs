@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { BLOG_POSTS, formatViews } from '../data/blogPosts';
+import { formatViews, getTopViewedPosts } from '../data/blogPosts';
 
 const features = [
   {
@@ -42,7 +42,7 @@ const quickLinks = [
   { href: '/Docs/docs/deployment', title: 'Triển khai', desc: 'Deploy lên GitHub Pages', emoji: '🌐' },
 ];
 
-const blogHighlights = [...BLOG_POSTS].sort((a, b) => b.views - a.views).slice(0, 3);
+const blogHighlights = getTopViewedPosts(3);
 ---
 
 <Layout title="Trang chủ" description="DevHub Documentation - Tài liệu kỹ thuật toàn diện cho nhà phát triển">

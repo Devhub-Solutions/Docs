@@ -42,6 +42,45 @@ export const BLOG_POSTS: BlogPost[] = [
     views: 2110,
     readTime: '5 phút đọc',
   },
+  {
+    title: 'Thiết kế taxonomy danh mục cho docs/blog',
+    slug: 'taxonomy-design',
+    category: 'Nội dung',
+    excerpt: 'Cách phân nhóm chủ đề để menu và điều hướng giúp người đọc tìm nội dung nhanh, đúng ngữ cảnh.',
+    views: 1870,
+    readTime: '6 phút đọc',
+  },
+  {
+    title: 'Đo lường hành vi đọc bằng event tracking',
+    slug: 'event-tracking',
+    category: 'Analytics',
+    excerpt: 'Thiết lập sự kiện đọc bài, cuộn trang và CTA để tối ưu nội dung theo dữ liệu thực tế.',
+    views: 1650,
+    readTime: '7 phút đọc',
+  },
 ];
 
 export const formatViews = (value: number) => new Intl.NumberFormat('vi-VN').format(value);
+
+export const getTopViewedPosts = (limit: number) =>
+  [...BLOG_POSTS].sort((a, b) => b.views - a.views).slice(0, limit);
+
+export const getCategoriesWithCount = () => {
+  const categoryCountMap = BLOG_POSTS.reduce<Record<string, number>>((acc, post) => {
+    acc[post.category] = (acc[post.category] || 0) + 1;
+    return acc;
+  }, {});
+  return Object.entries(categoryCountMap).map(([name, count]) => ({ name, count }));
+};
+
+export const getRecommendedPosts = (limit: number, excludedSlugs: string[] = []) => {
+  const excluded = new Set(excludedSlugs);
+  const preferredPool = BLOG_POSTS.filter((post) => !excluded.has(post.slug));
+
+  if (preferredPool.length >= limit) {
+    return preferredPool.slice(0, limit);
+  }
+
+  const fallbackPool = BLOG_POSTS.filter((post) => !excluded.has(post.slug) || !post.featured);
+  return [...new Map([...preferredPool, ...fallbackPool].map((post) => [post.slug, post])).values()].slice(0, limit);
+};
