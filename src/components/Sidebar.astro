@@ -1,0 +1,101 @@
+---
+export interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '' } = Astro.props;
+
+const sections = [
+  {
+    title: 'Bắt đầu',
+    items: [
+      { href: '/Docs/docs/getting-started', label: 'Giới thiệu', icon: '🚀' },
+      { href: '/Docs/docs/installation', label: 'Cài đặt', icon: '⚙️' },
+      { href: '/Docs/docs/configuration', label: 'Cấu hình', icon: '🔧' },
+    ],
+  },
+  {
+    title: 'Hướng dẫn',
+    items: [
+      { href: '/Docs/docs/writing-content', label: 'Viết nội dung', icon: '✍️' },
+      { href: '/Docs/docs/styling', label: 'Giao diện & CSS', icon: '🎨' },
+      { href: '/Docs/docs/components', label: 'Components', icon: '🧩' },
+      { href: '/Docs/docs/deployment', label: 'Triển khai', icon: '🌐' },
+    ],
+  },
+  {
+    title: 'Tham khảo',
+    items: [
+      { href: '/Docs/docs/api-reference', label: 'API Reference', icon: '📖' },
+      { href: '/Docs/docs/examples', label: 'Ví dụ', icon: '💡' },
+      { href: '/Docs/docs/changelog', label: 'Changelog', icon: '📝' },
+    ],
+  },
+];
+---
+
+<nav aria-label="Sidebar navigation">
+  <div class="mb-4">
+    <a href="/Docs/docs/getting-started" class="btn-primary w-full justify-center text-sm py-2">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+      Bắt đầu nhanh
+    </a>
+  </div>
+
+  {sections.map((section) => (
+    <div class="mb-6">
+      <h3 class="text-xs font-semibold uppercase tracking-wider text-zinc-500 px-3 mb-2">
+        {section.title}
+      </h3>
+      <ul class="space-y-0.5">
+        {section.items.map((item) => {
+          const isActive = currentPath === item.href || currentPath.startsWith(item.href + '/');
+          return (
+            <li>
+              <a
+                href={item.href}
+                class:list={[
+                  'sidebar-link',
+                  isActive && 'active',
+                ]}
+              >
+                <span class="text-base leading-none">{item.icon}</span>
+                {item.label}
+                {isActive && (
+                  <span class="ml-auto w-1.5 h-1.5 rounded-full bg-lime-500"></span>
+                )}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  ))}
+
+  <div class="mt-6 pt-4 border-t border-zinc-700/50">
+    <a
+      href="https://github.com/Devhub-Solutions/Docs/issues"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="sidebar-link text-xs"
+    >
+      <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      Báo lỗi / Phản hồi
+    </a>
+    <a
+      href="https://github.com/Devhub-Solutions/Docs/blob/main/CONTRIBUTING.md"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="sidebar-link text-xs"
+    >
+      <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      Đóng góp
+    </a>
+  </div>
+</nav>

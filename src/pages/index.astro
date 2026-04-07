@@ -1,0 +1,170 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const features = [
+  {
+    icon: '📄',
+    title: 'Markdown & MDX',
+    desc: 'Viết tài liệu bằng Markdown hoặc MDX với hỗ trợ đầy đủ các thành phần tùy chỉnh.',
+  },
+  {
+    icon: '🎨',
+    title: 'Giao diện tối đẹp',
+    desc: 'Thiết kế tối với màu zinc và điểm nhấn lime, tạo trải nghiệm đọc thoải mái.',
+  },
+  {
+    icon: '⚡',
+    title: 'Hiệu năng cao',
+    desc: 'Được xây dựng với Astro — tải nhanh, SEO tốt, và điểm Lighthouse cao.',
+  },
+  {
+    icon: '🚀',
+    title: 'CI/CD tự động',
+    desc: 'Tự động deploy lên GitHub Pages mỗi khi bạn push code lên branch main.',
+  },
+  {
+    icon: '🔍',
+    title: 'Tìm kiếm nội dung',
+    desc: 'Tích hợp tìm kiếm toàn văn bản trong tất cả các trang tài liệu.',
+  },
+  {
+    icon: '📱',
+    title: 'Responsive',
+    desc: 'Giao diện tương thích hoàn hảo trên mọi thiết bị từ mobile đến desktop.',
+  },
+];
+
+const quickLinks = [
+  { href: '/Docs/docs/getting-started', title: 'Bắt đầu nhanh', desc: 'Thiết lập dự án trong vài phút', emoji: '🚀' },
+  { href: '/Docs/docs/installation', title: 'Cài đặt', desc: 'Hướng dẫn cài đặt chi tiết', emoji: '⚙️' },
+  { href: '/Docs/docs/writing-content', title: 'Viết nội dung', desc: 'Cách viết và tổ chức tài liệu', emoji: '✍️' },
+  { href: '/Docs/docs/deployment', title: 'Triển khai', desc: 'Deploy lên GitHub Pages', emoji: '🌐' },
+];
+---
+
+<Layout title="Trang chủ" description="DevHub Documentation - Tài liệu kỹ thuật toàn diện cho nhà phát triển">
+  <!-- Hero section -->
+  <section class="relative overflow-hidden">
+    <!-- Gradient background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800 pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(132,204,22,0.08),transparent_60%)] pointer-events-none" aria-hidden="true"></div>
+
+    <div class="relative max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 sm:pt-28 sm:pb-32">
+      <div class="max-w-3xl">
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-lime-500/10 border border-lime-500/20 rounded-full mb-6">
+          <span class="w-2 h-2 rounded-full bg-lime-500 animate-pulse"></span>
+          <span class="text-lime-400 text-sm font-medium">Phiên bản mới nhất v1.0.0</span>
+        </div>
+
+        <!-- Heading -->
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-zinc-100 leading-tight mb-6">
+          Tài liệu kỹ thuật<br />
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-lime-300">
+            toàn diện & đẹp mắt
+          </span>
+        </h1>
+
+        <p class="text-lg sm:text-xl text-zinc-400 leading-relaxed mb-8 max-w-2xl">
+          Xây dựng tài liệu chuyên nghiệp với Markdown, tự động triển khai lên GitHub Pages.
+          Giao diện tối tinh tế, hiệu năng cao và trải nghiệm đọc tuyệt vời.
+        </p>
+
+        <!-- CTA buttons -->
+        <div class="flex flex-wrap gap-4">
+          <a href="/Docs/docs/getting-started" class="btn-primary">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Bắt đầu ngay
+          </a>
+          <a href="https://github.com/Devhub-Solutions/Docs" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            Xem trên GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-2xl">
+        {[
+          { value: '10+', label: 'Trang tài liệu' },
+          { value: '100%', label: 'Tailwind CSS' },
+          { value: 'Auto', label: 'CI/CD Deploy' },
+          { value: 'MIT', label: 'Giấy phép' },
+        ].map(stat => (
+          <div class="text-center p-4 bg-zinc-800/50 rounded-xl border border-zinc-700/50">
+            <div class="text-2xl font-bold text-lime-400">{stat.value}</div>
+            <div class="text-xs text-zinc-500 mt-1">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick start links -->
+  <section class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-zinc-100 mb-8">Bắt đầu từ đâu?</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {quickLinks.map((item) => (
+        <a href={item.href} class="card group flex flex-col gap-3">
+          <span class="text-3xl">{item.emoji}</span>
+          <div>
+            <h3 class="font-semibold text-zinc-100 group-hover:text-lime-400 transition-colors">{item.title}</h3>
+            <p class="text-sm text-zinc-500 mt-1">{item.desc}</p>
+          </div>
+          <svg class="w-4 h-4 text-lime-500 mt-auto self-end opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Features grid -->
+  <section class="bg-zinc-800/30 border-y border-zinc-700/50">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div class="text-center mb-12">
+        <span class="badge-lime mb-3">Tính năng</span>
+        <h2 class="text-3xl font-bold text-zinc-100 mt-2">Tất cả những gì bạn cần</h2>
+        <p class="text-zinc-400 mt-3 max-w-xl mx-auto">
+          Được trang bị đầy đủ công cụ để tạo tài liệu chuyên nghiệp, dễ đọc và dễ duy trì.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {features.map((f) => (
+          <div class="card">
+            <span class="text-3xl block mb-4">{f.icon}</span>
+            <h3 class="font-semibold text-zinc-100 mb-2">{f.title}</h3>
+            <p class="text-sm text-zinc-400 leading-relaxed">{f.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA banner -->
+  <section class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="relative bg-gradient-to-r from-zinc-800 to-zinc-800/50 border border-zinc-700 rounded-2xl overflow-hidden p-8 sm:p-12 text-center">
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(132,204,22,0.06),transparent_70%)]" aria-hidden="true"></div>
+      <div class="relative">
+        <h2 class="text-2xl sm:text-3xl font-bold text-zinc-100 mb-4">
+          Sẵn sàng bắt đầu?
+        </h2>
+        <p class="text-zinc-400 mb-8 max-w-md mx-auto">
+          Bắt đầu viết tài liệu ngay hôm nay. Chỉ cần vài phút để thiết lập.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="/Docs/docs/getting-started" class="btn-primary">
+            Đọc tài liệu
+          </a>
+          <a href="/Docs/docs/installation" class="btn-secondary">
+            Hướng dẫn cài đặt
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
