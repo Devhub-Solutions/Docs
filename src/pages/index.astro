@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { formatViews, getTopViewedPosts } from '../data/blogPosts';
+import { getLatestPosts } from '../data/blogPosts';
 
 const features = [
   {
@@ -42,7 +42,7 @@ const quickLinks = [
   { href: '/Docs/docs/deployment', title: 'Triển khai', desc: 'Deploy lên GitHub Pages', emoji: '🌐' },
 ];
 
-const blogHighlights = getTopViewedPosts(3);
+const blogHighlights = getLatestPosts(3);
 ---
 
 <Layout title="Trang chủ" description="DevHub Documentation - Tài liệu kỹ thuật toàn diện cho nhà phát triển">
@@ -140,7 +140,7 @@ const blogHighlights = getTopViewedPosts(3);
         <a href={`/Docs/blog/${post.slug}`} class="card group">
           <span class="badge-lime">{post.category}</span>
           <h3 class="text-lg font-semibold text-zinc-100 mt-3 group-hover:text-lime-400 transition-colors">{post.title}</h3>
-          <p class="text-sm text-zinc-500 mt-2">{formatViews(post.views)} lượt xem</p>
+          <p class="text-sm text-zinc-500 mt-2">{post.readTime}</p>
         </a>
       ))}
     </div>
