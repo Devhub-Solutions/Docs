@@ -2,20 +2,23 @@
 import Layout from '../../layouts/Layout.astro';
 import {
   BLOG_POSTS,
-  formatViews,
   getCategoriesWithCount,
+  getLatestPosts,
   getRecommendedPosts,
-  getTopViewedPosts,
+  VIEWS_STORAGE_PREFIX,
 } from '../../data/blogPosts';
 
 const TOP_POSTS_LIMIT = 3;
 const featuredPost = BLOG_POSTS.find((post) => post.featured);
-const topViewedPosts = getTopViewedPosts(TOP_POSTS_LIMIT);
+const latestPosts = getLatestPosts(TOP_POSTS_LIMIT);
 const categories = getCategoriesWithCount();
 const recommendedPosts = getRecommendedPosts(
   TOP_POSTS_LIMIT,
-  [...topViewedPosts.map((post) => post.slug), ...(featuredPost ? [featuredPost.slug] : [])],
+  [...latestPosts.map((post) => post.slug), ...(featuredPost ? [featuredPost.slug] : [])],
+  featuredPost?.category,
 );
+// All posts sorted newest-first for the "Tất cả bài viết" grid
+const allPostsSorted = getLatestPosts(BLOG_POSTS.length);
 ---
 
 <Layout title="Blog" description="Blog DevHub Docs: bài viết chuyên sâu, danh mục nội dung, top bài xem nhiều và gợi ý đọc tiếp">
@@ -29,14 +32,18 @@ const recommendedPosts = getRecommendedPosts(
     </div>
   </section>
 
+  <!-- Danh mục – filterable buttons -->
   <section id="danh-muc" class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
     <h2 class="text-2xl font-bold text-zinc-100 mb-4">Danh mục</h2>
-    <div class="flex flex-wrap gap-3">
+    <div class="flex flex-wrap gap-3" id="category-filters" role="group" aria-label="Lọc theo danh mục">
+      <button data-filter="all" class="badge-lime px-4 py-2 text-sm cursor-pointer">
+        Tất cả <span class="ml-1 opacity-75">({BLOG_POSTS.length})</span>
+      </button>
       {categories.map((category) => (
-        <span class="badge-zinc px-4 py-2 text-sm">
+        <button data-filter={category.name} class="badge-zinc px-4 py-2 text-sm cursor-pointer">
           {category.name}
-          <span class="ml-2 text-zinc-400">({category.count})</span>
-        </span>
+          <span class="ml-1 text-zinc-400">({category.count})</span>
+        </button>
       ))}
     </div>
   </section>
@@ -48,7 +55,7 @@ const recommendedPosts = getRecommendedPosts(
         <div class="flex flex-wrap gap-3 items-center mb-3">
           <span class="badge-lime">{featuredPost.category}</span>
           <span class="text-xs text-zinc-500">{featuredPost.readTime}</span>
-          <span class="text-xs text-zinc-500">{formatViews(featuredPost.views)} lượt xem</span>
+          <span class="text-xs text-zinc-500" data-views-for={featuredPost.slug}>-- lượt xem</span>
         </div>
         <h3 class="text-xl font-semibold text-zinc-100 group-hover:text-lime-400 transition-colors">{featuredPost.title}</h3>
         <p class="text-zinc-400 mt-3">{featuredPost.excerpt}</p>
@@ -56,20 +63,29 @@ const recommendedPosts = getRecommendedPosts(
     </section>
   )}
 
+  <!-- Top bài viết xem nhiều – server renders latest, client re-sorts by real views -->
   <section class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
     <h2 class="text-2xl font-bold text-zinc-100 mb-4">Top bài viết xem nhiều</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {topViewedPosts.map((post, index) => (
-        <a href={`/Docs/blog/${post.slug}`} class="card group">
-          <span class="text-xs text-lime-400 font-semibold">TOP {index + 1}</span>
+    <div id="top-posts-container" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {BLOG_POSTS.map((post, index) => (
+        <a
+          href={`/Docs/blog/${post.slug}`}
+          class={`card group${index >= TOP_POSTS_LIMIT ? ' hidden' : ''}`}
+          data-slug={post.slug}
+          data-published={post.publishedAt}
+        >
+          <span data-rank class="text-xs text-lime-400 font-semibold">TOP {index + 1}</span>
           <h3 class="text-lg font-semibold text-zinc-100 mt-2 group-hover:text-lime-400 transition-colors">{post.title}</h3>
-          <p class="text-sm text-zinc-500 mt-2">{formatViews(post.views)} lượt xem · {post.readTime}</p>
+          <p class="text-sm text-zinc-500 mt-2">
+            <span data-views-for={post.slug}>-- lượt xem</span> · {post.readTime}
+          </p>
         </a>
       ))}
     </div>
   </section>
 
-  <section class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
+  <!-- Gợi ý – category-aware, server-rendered -->
+  <section class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
     <h2 class="text-2xl font-bold text-zinc-100 mb-4">Gợi ý cho bạn</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       {recommendedPosts.map((post) => (
@@ -77,8 +93,107 @@ const recommendedPosts = getRecommendedPosts(
           <span class="badge-zinc">{post.category}</span>
           <h3 class="text-lg font-semibold text-zinc-100 mt-3 group-hover:text-lime-400 transition-colors">{post.title}</h3>
           <p class="text-sm text-zinc-400 mt-2">{post.excerpt}</p>
+          <p class="text-xs text-zinc-500 mt-3">
+            <span data-views-for={post.slug}>-- lượt xem</span> · {post.readTime}
+          </p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Tất cả bài viết – filterable grid -->
+  <section id="tat-ca-bai-viet" class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pb-14">
+    <h2 class="text-2xl font-bold text-zinc-100 mb-4">Tất cả bài viết</h2>
+    <div id="all-posts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {allPostsSorted.map((post) => (
+        <a
+          href={`/Docs/blog/${post.slug}`}
+          class="card group"
+          data-category={post.category}
+        >
+          <span class="badge-zinc text-xs">{post.category}</span>
+          <h3 class="text-base font-semibold text-zinc-100 mt-2 group-hover:text-lime-400 transition-colors">{post.title}</h3>
+          <p class="text-sm text-zinc-400 mt-2 line-clamp-2">{post.excerpt}</p>
+          <p class="text-xs text-zinc-500 mt-3">
+            <span data-views-for={post.slug}>-- lượt xem</span> · {post.readTime}
+          </p>
         </a>
       ))}
     </div>
   </section>
 </Layout>
+
+<script define:vars={{ blogPosts: BLOG_POSTS.map((p) => ({ slug: p.slug, publishedAt: p.publishedAt })), storagePrefix: VIEWS_STORAGE_PREFIX, topLimit: TOP_POSTS_LIMIT }}>
+  (function () {
+    // --- 1. Load real view counts from localStorage and update every display ---
+    const viewMap = {};
+    blogPosts.forEach(({ slug }) => {
+      viewMap[slug] = parseInt(localStorage.getItem(storagePrefix + slug) || '0');
+    });
+
+    document.querySelectorAll('[data-views-for]').forEach((el) => {
+      const slug = el.getAttribute('data-views-for');
+      if (slug && slug in viewMap) {
+        el.textContent = viewMap[slug].toLocaleString('vi-VN') + ' lượt xem';
+      }
+    });
+
+    // --- 2. Re-sort "Top bài viết xem nhiều" by real view counts ---
+    const container = document.getElementById('top-posts-container');
+    if (container) {
+      const cards = Array.from(container.querySelectorAll('[data-slug]'));
+      cards.sort((a, b) => {
+        const vA = viewMap[a.getAttribute('data-slug')] || 0;
+        const vB = viewMap[b.getAttribute('data-slug')] || 0;
+        if (vB !== vA) return vB - vA;
+        // Fallback: newest first
+        return (
+          new Date(b.getAttribute('data-published') || 0).getTime() -
+          new Date(a.getAttribute('data-published') || 0).getTime()
+        );
+      });
+      // Re-insert in sorted order, show only top N
+      cards.forEach((card) => container.removeChild(card));
+      cards.forEach((card, i) => {
+        const rankEl = card.querySelector('[data-rank]');
+        if (rankEl) rankEl.textContent = 'TOP ' + (i + 1);
+        if (i < topLimit) {
+          card.classList.remove('hidden');
+          container.appendChild(card);
+        }
+      });
+    }
+
+    // --- 3. Category filter buttons ---
+    const filterBtns = document.querySelectorAll('#category-filters [data-filter]');
+    const allPostsGrid = document.getElementById('all-posts-grid');
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter');
+
+        // Toggle active styles
+        filterBtns.forEach((b) => {
+          b.classList.remove('badge-lime');
+          b.classList.add('badge-zinc');
+        });
+        btn.classList.remove('badge-zinc');
+        btn.classList.add('badge-lime');
+
+        // Filter "Tất cả bài viết" grid
+        if (allPostsGrid) {
+          allPostsGrid.querySelectorAll('[data-category]').forEach((card) => {
+            const match = filter === 'all' || card.getAttribute('data-category') === filter;
+            card.style.display = match ? '' : 'none';
+          });
+        }
+
+        // Scroll to the "Tất cả bài viết" section
+        const section = document.getElementById('tat-ca-bai-viet');
+        if (section && filter !== 'all') {
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  })();
+</script>

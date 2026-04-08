@@ -1,11 +1,22 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { BLOG_POSTS, getRecommendedPosts, VIEWS_STORAGE_PREFIX } from '../../data/blogPosts';
+
+const slug = 'content-strategy';
+const post = BLOG_POSTS.find((p) => p.slug === slug)!;
+const relatedPosts = getRecommendedPosts(2, [slug], post.category);
 ---
 
 <Layout title="Chiến lược nội dung tài liệu cho team sản phẩm" description="Cách tổ chức danh mục và vòng đời nội dung cho docs/blog">
   <article class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
     <a href="/Docs/blog" class="text-sm text-lime-400 hover:text-lime-300 transition-colors">← Quay về Blog</a>
     <h1 class="text-3xl sm:text-4xl font-bold text-zinc-100 mt-4">Chiến lược nội dung tài liệu cho team sản phẩm</h1>
+    <div class="flex flex-wrap gap-3 items-center mt-3 text-xs text-zinc-500">
+      <span class="badge-zinc">{post.category}</span>
+      <span>{post.readTime}</span>
+      <span>·</span>
+      <span id="view-count">-- lượt xem</span>
+    </div>
     <p class="text-zinc-400 mt-4">
       Một hệ thống tài liệu hiệu quả cần có danh mục rõ ràng, chủ đề nhất quán và cơ chế cập nhật định kỳ. Điều này giúp người đọc tìm đúng thông tin nhanh hơn.
     </p>
@@ -19,5 +30,30 @@ import Layout from '../../layouts/Layout.astro';
         <li>• Nhóm bài viết gợi ý để tăng lượt đọc sâu.</li>
       </ul>
     </div>
+
+    {relatedPosts.length > 0 && (
+      <div class="mt-12">
+        <h2 class="text-xl font-semibold text-zinc-100 mb-4">Bài viết liên quan</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {relatedPosts.map((related) => (
+            <a href={`/Docs/blog/${related.slug}`} class="card group">
+              <span class="badge-zinc text-xs">{related.category}</span>
+              <h3 class="text-base font-semibold text-zinc-100 mt-2 group-hover:text-lime-400 transition-colors">{related.title}</h3>
+              <p class="text-sm text-zinc-400 mt-1">{related.excerpt}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
   </article>
 </Layout>
+
+<script define:vars={{ postSlug: slug, storagePrefix: VIEWS_STORAGE_PREFIX }}>
+  (function () {
+    const key = storagePrefix + postSlug;
+    const next = (parseInt(localStorage.getItem(key) || '0')) + 1;
+    localStorage.setItem(key, String(next));
+    const el = document.getElementById('view-count');
+    if (el) el.textContent = next.toLocaleString('vi-VN') + ' lượt xem';
+  })();
+</script>

@@ -3,7 +3,7 @@ export interface BlogPost {
   slug: string;
   category: string;
   excerpt: string;
-  views: number;
+  publishedAt: string;
   readTime: string;
   featured?: boolean;
 }
@@ -14,7 +14,7 @@ export const BLOG_POSTS: BlogPost[] = [
     slug: 'astro-performance',
     category: 'Astro',
     excerpt: 'Giảm JS không cần thiết, cải thiện tốc độ tải và giữ trải nghiệm đọc mượt trên mọi thiết bị.',
-    views: 4250,
+    publishedAt: '2025-03-10',
     readTime: '7 phút đọc',
     featured: true,
   },
@@ -23,7 +23,7 @@ export const BLOG_POSTS: BlogPost[] = [
     slug: 'content-strategy',
     category: 'Nội dung',
     excerpt: 'Cách xây dựng danh mục, vòng đời bài viết, và quy trình cập nhật để tài liệu luôn hữu ích.',
-    views: 2980,
+    publishedAt: '2025-02-20',
     readTime: '6 phút đọc',
   },
   {
@@ -31,7 +31,7 @@ export const BLOG_POSTS: BlogPost[] = [
     slug: 'docs-seo',
     category: 'SEO',
     excerpt: 'Tối ưu cấu trúc trang docs/blog để người dùng tìm đúng nội dung và tăng organic traffic.',
-    views: 3510,
+    publishedAt: '2025-03-01',
     readTime: '8 phút đọc',
   },
   {
@@ -39,7 +39,7 @@ export const BLOG_POSTS: BlogPost[] = [
     slug: 'release-checklist',
     category: 'Quy trình',
     excerpt: 'Danh sách kiểm tra nhanh về chất lượng nội dung, liên kết, build và theo dõi hành vi người đọc.',
-    views: 2110,
+    publishedAt: '2025-01-15',
     readTime: '5 phút đọc',
   },
   {
@@ -47,7 +47,7 @@ export const BLOG_POSTS: BlogPost[] = [
     slug: 'taxonomy-design',
     category: 'Nội dung',
     excerpt: 'Cách phân nhóm chủ đề để menu và điều hướng giúp người đọc tìm nội dung nhanh, đúng ngữ cảnh.',
-    views: 1870,
+    publishedAt: '2025-02-05',
     readTime: '6 phút đọc',
   },
   {
@@ -55,15 +55,21 @@ export const BLOG_POSTS: BlogPost[] = [
     slug: 'event-tracking',
     category: 'Analytics',
     excerpt: 'Thiết lập sự kiện đọc bài, cuộn trang và CTA để tối ưu nội dung theo dữ liệu thực tế.',
-    views: 1650,
+    publishedAt: '2025-01-28',
     readTime: '7 phút đọc',
   },
 ];
 
+/** localStorage key prefix for real per-post view counts. */
+export const VIEWS_STORAGE_PREFIX = 'devhub_views_';
+
 export const formatViews = (value: number) => new Intl.NumberFormat('vi-VN').format(value);
 
-export const getTopViewedPosts = (limit: number) =>
-  [...BLOG_POSTS].sort((a, b) => b.views - a.views).slice(0, limit);
+/** Returns posts sorted newest-first (used as server-side default for "top viewed"). */
+export const getLatestPosts = (limit: number) =>
+  [...BLOG_POSTS]
+    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+    .slice(0, limit);
 
 export const getCategoriesWithCount = () => {
   const categoryCountMap = BLOG_POSTS.reduce<Record<string, number>>((acc, post) => {
@@ -74,9 +80,20 @@ export const getCategoriesWithCount = () => {
 };
 
 /**
- * Returns recommended posts while trying to exclude already surfaced posts first.
+ * Returns recommended posts, preferring the same category when provided.
+ * Already-surfaced slugs are excluded first.
  */
-export const getRecommendedPosts = (limit: number, excludedSlugs: string[] = []) => {
+export const getRecommendedPosts = (
+  limit: number,
+  excludedSlugs: string[] = [],
+  preferCategory?: string,
+) => {
   const excluded = new Set(excludedSlugs);
-  return BLOG_POSTS.filter((post) => !excluded.has(post.slug)).slice(0, limit);
+  const available = BLOG_POSTS.filter((post) => !excluded.has(post.slug));
+  if (preferCategory) {
+    const sameCategory = available.filter((p) => p.category === preferCategory);
+    const others = available.filter((p) => p.category !== preferCategory);
+    return [...sameCategory, ...others].slice(0, limit);
+  }
+  return available.slice(0, limit);
 };
