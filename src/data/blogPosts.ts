@@ -63,8 +63,6 @@ export const BLOG_POSTS: BlogPost[] = [
 /** localStorage key prefix for real per-post view counts. */
 export const VIEWS_STORAGE_PREFIX = 'devhub_views_';
 
-export const formatViews = (value: number) => new Intl.NumberFormat('vi-VN').format(value);
-
 /** Returns posts sorted newest-first (used as server-side default for "top viewed"). */
 export const getLatestPosts = (limit: number) =>
   [...BLOG_POSTS]

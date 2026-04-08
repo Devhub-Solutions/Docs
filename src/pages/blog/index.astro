@@ -188,10 +188,11 @@ const allPostsSorted = getLatestPosts(BLOG_POSTS.length);
           });
         }
 
-        // Scroll to the "Tất cả bài viết" section
+        // Scroll to the "Tất cả bài viết" section, respecting reduced-motion preference
         const section = document.getElementById('tat-ca-bai-viet');
         if (section && filter !== 'all') {
-          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          section.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
         }
       });
     });
